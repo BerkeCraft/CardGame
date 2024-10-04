@@ -9,12 +9,15 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var playerCard = "card7"
-    @State var cpuCard = "card13"
+    @State var playerCard = "back"
+    @State var cpuCard = "back"
     
-  @State var playerScore = 0
-   @State var cpuScore = 0
+    @State var playerScore = 0
+    @State var cpuScore = 0
     
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+   
     
     var body: some View {
         
@@ -62,18 +65,25 @@ struct ContentView: View {
                 
                 
             }.padding()
-
+            
+                .alert(isPresented: $showAlert) {
+                    Alert(
+                        title: Text(alertMessage),
+                        message: Text("Would you like to play again?"),
+                        dismissButton: .default(Text("Try Again"), action: resetGame)
+                    )
+                }
         }
         
     }
     
     func dealCard(){
         // Randomize the players card
-        var playerCardValue = Int.random(in: 2...14)
+        let playerCardValue = Int.random(in: 2...14)
         
         playerCard = "card" + String(playerCardValue)
         // Randomize the cpus card
-        var cpusCardValue = Int.random(in: 2...14)
+        let cpusCardValue = Int.random(in: 2...14)
         cpuCard = "card" + String(cpusCardValue)
         // Update scores
         
@@ -84,8 +94,25 @@ struct ContentView: View {
             cpuScore += 1
         }
         
+        if  playerScore == 3 {
+            alertMessage = "Congratulations! You won!"
+                        showAlert = true
+        }
+        else if cpuScore == 3 {
+            alertMessage = "CPU won! Better luck next time!"
+                        showAlert = true
+        }
+        
         
     }
+    
+    func resetGame(){
+        playerScore = 0
+        cpuScore = 0
+        playerCard = "back"
+        cpuCard = "back"
+    }
+    
     
 }
 
